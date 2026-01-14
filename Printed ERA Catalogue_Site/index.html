@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Primary Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Decor Drapes Instyle | Printed Roller Fabrics - Browse our premium fabric collection with easy search and WhatsApp sharing.">
+    <meta name="author" content="Decor Drapes Instyle">
+    <meta name="keywords" content="Decor Drapes, Roller Fabrics, Printed Fabrics, Fabric Catalog, ERA Fabrics">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="shortcut icon" href="assets/favicon.ico">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="assets/site.webmanifest">
+
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/mstile-150x150.png">
+
+    <!-- Theme Color for Chrome, Firefox OS, Opera, Vivaldi -->
+    <meta name="theme-color" content="#25D366">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://decordrapesinstyle.com">
+    <meta property="og:title" content="Decor Drapes Instyle | Printed Roller Fabrics">
+    <meta property="og:description" content="Browse our premium fabric collection with easy search and WhatsApp sharing.">
+    <meta property="og:image" content="https://res.cloudinary.com/ds6um53cx/image/upload/v1753533220/eiumnqotu9tvjierkzho.ico">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://decordrapesinstyle.com">
+    <meta name="twitter:title" content="Decor Drapes Instyle | Printed Roller Fabrics">
+    <meta name="twitter:description"
+        content="Browse our premium fabric collection with easy search and WhatsApp sharing.">
+    <meta name="twitter:image" content="https://res.cloudinary.com/ds6um53cx/image/upload/v1753533220/eiumnqotu9tvjierkzho.ico">
+
+    <title>Decor Drapes Instyle | Printed Roller Fabrics</title>
+    <link rel="stylesheet" href="output.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+    <style>
+        .aspect-custom {
+            aspect-ratio: 979 / 744;
+        }
+
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .image-zoom {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .image-zoom:hover {
+            transform: scale(1.03);
+        }
+
+        .zoomable-image {
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+        }
+
+        .hero-section {
+            height: 30vh;
+            min-height: 140px;
+        }
+
+        .mobile-app-style {
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .brand-green {
+            color: #1a936f;
+        }
+
+        .whatsapp-green {
+            color: #25D366;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Floating labels */
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 0.75rem 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-label {
+            position: absolute;
+            top: 50%;
+            left: 0.75rem;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 1rem;
+            transition: all 0.2s;
+            pointer-events: none;
+            background: white;
+            padding: 0 0.25rem;
+        }
+
+        .form-input:focus+.form-label,
+        .form-input:not(:placeholder-shown)+.form-label {
+            top: 0;
+            font-size: 0.75rem;
+            color: #3b82f6;
+        }
+
+        /* Enhanced radio buttons */
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .radio-option {
+            flex: 1;
+        }
+
+        .radio-input {
+            display: none;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .radio-input:checked+.radio-label {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-input {
+            display: none;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .checkbox-input:checked+.checkbox-label {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        .checkbox-label::before {
+            content: '';
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.25rem;
+            margin-right: 0.75rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-input:checked+.checkbox-label::before {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            content: '✓';
+            color: white;
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+
+        /* Mobile responsive modal */
+        @media (max-width: 768px) {
+            .share-modal-container {
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Mobile-App Style Hero Section -->
+    <section class="hero-section mobile-app-style bg-white px-4">
+        <div class="container mx-auto max-w-6xl h-full flex flex-col justify-center">
+            <!-- Brand Name -->
+            <div class="text-center mb-4">
+                <h1 class="text-xl font-bold text-gray-800">Decor Drapes Instyle</h1>
+                <p class="text-sm text-gray-600">Printed Roller Fabrics</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="w-full mb-4">
+                <div class="relative">
+                    <input type="text" id="search" placeholder="Search fabric code..."
+                        class="w-full pl-10 pr-4 py-3 rounded-full border border-gray-300 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400">
+                    <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-between">
+                <a href="https://decordrapesinstyle.com" target="_blank"
+                    class="bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-full hover:bg-gray-200 transition duration-300 flex items-center">
+                    <i class="fas fa-globe mr-2"></i>
+                    <span>Website</span>
+                </a>
+                <a href="assets/catalog.pdf" download
+                    class="bg-gray-100 text-gray-700 font-medium py-2 px-4 rounded-full hover:bg-gray-200 transition duration-300 flex items-center">
+                    <i class="fas fa-file-pdf mr-2"></i>
+                    <span>PDF Catalog</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <main class="py-8 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <!-- Image Grid -->
+            <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Fabric items will be dynamically generated here -->
+            </div>
+            <!-- Pagination -->
+            <div id="pagination-controls" class="flex justify-center mt-8">
+                <!-- Pagination buttons will be dynamically generated here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Image Zoom -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="relative w-full h-full flex items-center justify-center">
+            <button id="closeModal"
+                class="absolute top-4 right-4 text-white text-2xl z-10 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-4 z-10">
+                <button id="zoomIn"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button id="zoomOut"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <button id="resetZoom"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-sm">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button id="shareWhatsApp"
+                    class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                    <i class="fab fa-whatsapp whatsapp-green"></i>
+                </button>
+            </div>
+
+            <div class="max-w-full max-h-full overflow-auto p-4">
+                <div class="bg-white rounded-lg p-4 mb-4 mx-auto max-w-md">
+                    <h3 id="modalTitle" class="text-xl font-bold text-center text-gray-800"></h3>
+                </div>
+                <img id="modalImage" src="" alt="Fabric" class="zoomable-image mx-auto">
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Share Modal -->
+    <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+        <div
+            class="bg-white rounded-xl w-full max-w-md mx-4 modal-enter share-modal-container flex flex-col max-h-[90vh] overflow-hidden">
+
+            <!-- Header -->
+            <div class="p-4 flex justify-between items-center border-b sticky top-0 bg-white rounded-t-xl z-10">
+                <h3 class="text-xl font-bold text-gray-800">Share Fabric Details</h3>
+                <button id="closeShareModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="p-6 overflow-y-auto flex-1">
+                <div class="flex justify-center mb-6">
+                    <img id="shareImage" src="" alt="Fabric" class="w-32 h-24 object-cover rounded-lg shadow">
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-700 mb-3 text-center">Fabric Details</h4>
+
+                    <!-- Width & Height -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="form-group">
+                            <input type="text" id="width" class="form-input" placeholder=" ">
+                            <label for="width" class="form-label">Width</label>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="height" class="form-input" placeholder=" ">
+                            <label for="height" class="form-label">Height</label>
+                        </div>
+                    </div>
+
+                    <!-- Radio buttons -->
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600 mb-2">Type</p>
+                        <div class="radio-group flex gap-3">
+                            <div class="radio-option">
+                                <input type="radio" id="roller" name="type" value="roller" class="radio-input" checked>
+                                <label for="roller" class="radio-label">Roller</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="zebra" name="type" value="zebra" class="radio-input">
+                                <label for="zebra" class="radio-label">Zebra</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox -->
+                    <div id="pelmetSection" class="checkbox-group mb-4">
+                        <input type="checkbox" id="pelmet" class="checkbox-input">
+                        <label for="pelmet" class="checkbox-label">With Pelmet</label>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group">
+                        <textarea id="additionalNotes" class="form-input" rows="3" placeholder=" "></textarea>
+                        <label for="additionalNotes" class="form-label">Additional Notes</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Buttons -->
+            <div class="p-4 border-t bg-white sticky bottom-0 rounded-b-xl flex gap-3">
+                <!-- WhatsApp Button -->
+                <button id="whatsappShareBtn"
+                    class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fab fa-whatsapp text-green-500 text-lg"></i>
+                    <span>WhatsApp</span>
+                </button>
+
+                <!-- Gmail Button -->
+                <button id="emailShareBtn"
+                    class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2 shadow-sm">
+                    <img src="https://www.svgrepo.com/show/452213/gmail.svg" alt="Gmail" class="w-6 h-6">
+                    <span>Gmail</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Hidden canvas for image generation -->
+    <canvas id="imageCanvas" class="hidden"></canvas>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const catalogGrid = document.getElementById('catalog-grid');
+            const paginationControls = document.getElementById('pagination-controls');
+            const searchInput = document.getElementById('search');
+
+            const startCode = 958;
+            const endCode = 1057;
+            const itemsPerPage = 12;
+            let currentPage = 1;
+            let fabricItems = [];
+
+            // Initialize lazy loading
+            var lazyLoadInstance = new LazyLoad({
+                elements_selector: ".lazy"
+            });
+
+            // Generate all fabric items
+            for (let i = startCode; i <= endCode; i++) {
+                const fabricCode = `ERA-${i}`;
+                fabricItems.push(fabricCode);
+            }
+
+            function displayItems(items, page) {
+                catalogGrid.innerHTML = '';
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedItems = items.slice(startIndex, endIndex);
+
+                paginatedItems.forEach(fabricCode => {
+                    const fabricItem = document.createElement('div');
+                    fabricItem.className = 'bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition duration-300 image-zoom border border-gray-100';
+                    fabricItem.innerHTML = `
+                <div class="relative aspect-custom bg-gray-100">
+                    <img data-src="assets/${fabricCode}.webp" alt="${fabricCode}" class="lazy w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 flex justify-between items-end">
+                        <p class="text-white font-medium">${fabricCode}</p>
+                        <button class="share-btn mb-1 text-white hover:text-green-300 transition duration-300 rounded-full w-8 h-8 flex items-center justify-center" data-code="${fabricCode}">
+                            <i class="fab fa-whatsapp text-lg whatsapp-green"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-3 bg-gray-50 border-t border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-500">Fabric Code</span>
+                        <span class="text-xs brand-green font-medium">Decor Drapes</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mt-1">${fabricCode}</h3>
+                </div>
+            `;
+
+                    // Add click event to open modal
+                    const img = fabricItem.querySelector('img');
+                    img.addEventListener('click', () => openModal(fabricCode));
+
+                    // Add click event to WhatsApp share button
+                    const shareBtn = fabricItem.querySelector('.share-btn');
+                    shareBtn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent opening modal when clicking share button
+                        openShareModal(fabricCode);
+                    });
+
+                    catalogGrid.appendChild(fabricItem);
+                });
+
+                // Update lazy loading
+                lazyLoadInstance.update();
+            }
+
+            function setupPagination(items) {
+                paginationControls.innerHTML = '';
+                const pageCount = Math.ceil(items.length / itemsPerPage);
+
+                for (let i = 1; i <= pageCount; i++) {
+                    const button = document.createElement('button');
+                    button.innerText = i;
+                    button.className = `mx-1 px-3 py-1 rounded-md ${currentPage === i ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-700'}`;
+                    button.addEventListener('click', () => {
+                        currentPage = i;
+                        displayItems(items, currentPage);
+                        setupPagination(items);
+                    });
+                    paginationControls.appendChild(button);
+                }
+            }
+
+            function filterItems() {
+                const searchTerm = searchInput.value.toUpperCase();
+                const filteredItems = fabricItems.filter(code => code.includes(searchTerm));
+                currentPage = 1;
+                displayItems(filteredItems, currentPage);
+                setupPagination(filteredItems);
+            }
+
+            searchInput.addEventListener('input', filterItems);
+
+            // Initial display
+            displayItems(fabricItems, currentPage);
+            setupPagination(fabricItems);
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeModal = document.getElementById('closeModal');
+        const zoomIn = document.getElementById('zoomIn');
+        const zoomOut = document.getElementById('zoomOut');
+        const resetZoom = document.getElementById('resetZoom');
+        const shareWhatsApp = document.getElementById('shareWhatsApp');
+
+        // Share modal elements
+        const shareModal = document.getElementById('shareModal');
+        const shareImage = document.getElementById('shareImage');
+        const closeShareModal = document.getElementById('closeShareModal');
+        const whatsappShareBtn = document.getElementById('whatsappShareBtn');
+        const emailShareBtn = document.getElementById('emailShareBtn');
+
+        // Form elements
+        const widthInput = document.getElementById('width');
+        const heightInput = document.getElementById('height');
+        const typeInputs = document.querySelectorAll('input[name="type"]');
+        const pelmetCheckbox = document.getElementById('pelmet');
+        const pelmetSection = document.getElementById('pelmetSection');
+        const additionalNotes = document.getElementById('additionalNotes');
+
+        // Canvas for image generation
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let currentZoom = 1;
+        const zoomStep = 0.2;
+        const minZoom = 0.5;
+        const maxZoom = 3;
+        let currentFabricCode = '';
+
+        function openModal(fabricCode) {
+            currentFabricCode = fabricCode;
+            modalImage.src = `assets/${fabricCode}.webp`;
+            modalTitle.textContent = `${fabricCode} - Decor Drapes Instyle`;
+            resetZoomFunc();
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModalFunc() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            resetZoomFunc();
+        }
+
+        function openShareModal(fabricCode) {
+            currentFabricCode = fabricCode;
+            shareImage.src = `assets/${fabricCode}.webp`;
+
+            // Reset form
+            widthInput.value = '';
+            heightInput.value = '';
+            typeInputs[0].checked = true; // Roller selected by default
+            pelmetCheckbox.checked = false;
+            additionalNotes.value = '';
+
+            // Reset floating labels
+            document.querySelectorAll('.form-input').forEach(input => {
+                if (input.value === '') {
+                    input.nextElementSibling.style.top = '50%';
+                    input.nextElementSibling.style.fontSize = '1rem';
+                    input.nextElementSibling.style.color = '#6b7280';
+                }
+            });
+
+            shareModal.classList.remove('hidden');
+        }
+
+        function closeShareModalFunc() {
+            shareModal.classList.add('hidden');
+        }
+
+        function zoomInFunc() {
+            if (currentZoom < maxZoom) {
+                currentZoom += zoomStep;
+                updateZoom();
+            }
+        }
+
+        function zoomOutFunc() {
+            if (currentZoom > minZoom) {
+                currentZoom -= zoomStep;
+                updateZoom();
+            }
+        }
+
+        function resetZoomFunc() {
+            currentZoom = 1;
+            updateZoom();
+        }
+
+        function updateZoom() {
+            modalImage.style.transform = `scale(${currentZoom})`;
+        }
+
+        // Generate image with fabric details
+        function generateImageWithDetails(fabricCode, formData) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function () {
+                    // Set canvas size
+                    canvas.width = img.width;
+                    canvas.height = img.height + 120; // Extra space for details
+
+                    // Draw the original image
+                    ctx.drawImage(img, 0, 0);
+
+                    // Draw details section
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                    ctx.fillRect(0, img.height, img.width, 120);
+
+                    // Draw text
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 28px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`Fabric: ${fabricCode}`, img.width / 2, img.height + 35);
+
+                    ctx.font = '20px Arial';
+                    let detailsText = '';
+                    if (formData.width) detailsText += `Width: ${formData.width} | `;
+                    if (formData.height) detailsText += `Height: ${formData.height} | `;
+                    detailsText += `Type: ${formData.type}`;
+                    if (formData.type === 'roller') {
+                        detailsText += ` | Pelmet: ${formData.pelmet ? 'Yes' : 'No'}`;
+                    }
+
+                    ctx.fillText(detailsText, img.width / 2, img.height + 70);
+
+                    if (formData.notes) {
+                        ctx.font = '18px Arial';
+                        // Handle long notes by wrapping text
+                        const maxWidth = img.width - 40;
+                        const words = formData.notes.split(' ');
+                        let line = '';
+                        let y = img.height + 100;
+
+                        for (let i = 0; i < words.length; i++) {
+                            const testLine = line + words[i] + ' ';
+                            const metrics = ctx.measureText(testLine);
+                            const testWidth = metrics.width;
+
+                            if (testWidth > maxWidth && i > 0) {
+                                ctx.fillText(line, img.width / 2, y);
+                                line = words[i] + ' ';
+                                y += 25;
+                            } else {
+                                line = testLine;
+                            }
+                        }
+                        ctx.fillText(line, img.width / 2, y);
+                    }
+
+                    // Add brand name at the bottom
+                    ctx.font = 'bold 22px Arial';
+                    ctx.fillText('Decor Drapes Instyle', img.width / 2, img.height + 115);
+
+                    // Convert canvas to blob
+                    canvas.toBlob(resolve, 'image/jpeg', 0.9);
+                };
+                img.src = `assets/${fabricCode}.webp`;
+            });
+        }
+
+        // WhatsApp sharing function
+        function shareOnWhatsApp(fabricCode, formData) {
+            // Show loading state
+            whatsappShareBtn.classList.add('loading');
+            whatsappShareBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating Image...';
+
+            // Generate the image with details
+            generateImageWithDetails(fabricCode, formData).then(blob => {
+                // Create a file from the blob
+                const file = new File([blob], `${fabricCode}_details.jpg`, { type: 'image/jpeg' });
+
+                // Create message text
+                let message = `Fabric Details - ${fabricCode} from Decor Drapes Instyle\n\n`;
+
+                // Add fabric details
+                if (formData.width) message += `Width: ${formData.width}\n`;
+                if (formData.height) message += `Height: ${formData.height}\n`;
+                message += `Type: ${formData.type}\n`;
+                if (formData.type === 'roller') {
+                    message += `Pelmet: ${formData.pelmet ? 'Yes' : 'No'}\n`;
+                }
+                if (formData.notes) message += `Notes: ${formData.notes}\n`;
+
+                // Use the Web Share API if available (works on mobile)
+                if (navigator.share) {
+                    navigator.share({
+                        files: [file],
+                        text: message
+                    }).then(() => {
+                        console.log('Share successful');
+                    }).catch(err => {
+                        console.log('Error sharing:', err);
+                        // Fallback for when share is cancelled or fails
+                        fallbackWhatsAppShare(blob, message);
+                    });
+                } else {
+                    // Fallback for desktop browsers
+                    fallbackWhatsAppShare(blob, message);
+                }
+
+                // Reset button
+                whatsappShareBtn.classList.remove('loading');
+                whatsappShareBtn.innerHTML = '<i class="fab fa-whatsapp mr-2 text-xl"></i> Share via WhatsApp';
+
+                closeShareModalFunc();
+            });
+        }
+
+        // Fallback WhatsApp share method for desktop browsers
+        function fallbackWhatsAppShare(blob, message) {
+            // Create a download link for the image
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = `${currentFabricCode}_details.jpg`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+
+            // Create WhatsApp URL
+            const whatsappUrl = `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+
+            // Show instruction for desktop users
+            if (!navigator.share) {
+                alert('The image has been downloaded. Please attach it manually in the WhatsApp chat that opened.');
+            }
+        }
+
+        // Email sharing function
+        function shareOnEmail(fabricCode, formData) {
+            // Show loading state
+            emailShareBtn.classList.add('loading');
+            emailShareBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating Image...';
+
+            // Generate the image with details
+            generateImageWithDetails(fabricCode, formData).then(blob => {
+                // Create a download link for the image
+                const url = URL.createObjectURL(blob);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = url;
+                downloadLink.download = `${fabricCode}_details.jpg`;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+
+                // Create email content
+                let subject = `Fabric Details - ${fabricCode}`;
+                let body = `Fabric Details - ${fabricCode} from Decor Drapes Instyle\n\n`;
+
+                // Add fabric details
+                if (formData.width) body += `Width: ${formData.width}\n`;
+                if (formData.height) body += `Height: ${formData.height}\n`;
+                body += `Type: ${formData.type}\n`;
+                if (formData.type === 'roller') {
+                    body += `Pelmet: ${formData.pelmet ? 'Yes' : 'No'}\n`;
+                }
+                if (formData.notes) body += `Notes: ${formData.notes}\n`;
+
+                body += `\n\nThe image with fabric details has been downloaded. Please attach it to this email.`;
+
+                // Create mailto link
+                const mailtoLink = `mailto:contact@decordrapesinstyle.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+                // Open email client
+                window.location.href = mailtoLink;
+
+                // Reset button
+                emailShareBtn.classList.remove('loading');
+                emailShareBtn.innerHTML = '<img src="https://www.svgrepo.com/show/452213/gmail.svg" alt="Gmail" class="w-6 h-6"><span>Gmail</span>';
+
+                closeShareModalFunc();
+            });
+        }
+
+        // Event listeners
+        closeModal.addEventListener('click', closeModalFunc);
+        zoomIn.addEventListener('click', zoomInFunc);
+        zoomOut.addEventListener('click', zoomOutFunc);
+        resetZoom.addEventListener('click', resetZoomFunc);
+        shareWhatsApp.addEventListener('click', () => openShareModal(currentFabricCode));
+
+        // Share modal event listeners
+        closeShareModal.addEventListener('click', closeShareModalFunc);
+
+        // WhatsApp share button event listener
+        whatsappShareBtn.addEventListener('click', () => {
+            // Get form data
+            const formData = {
+                width: widthInput.value,
+                height: heightInput.value,
+                type: document.querySelector('input[name="type"]:checked').value,
+                pelmet: pelmetCheckbox.checked,
+                notes: additionalNotes.value
+            };
+
+            shareOnWhatsApp(currentFabricCode, formData);
+        });
+
+        // Email share button event listener
+        emailShareBtn.addEventListener('click', () => {
+            // Get form data
+            const formData = {
+                width: widthInput.value,
+                height: heightInput.value,
+                type: document.querySelector('input[name="type"]:checked').value,
+                pelmet: pelmetCheckbox.checked,
+                notes: additionalNotes.value
+            };
+
+            shareOnEmail(currentFabricCode, formData);
+        });
+
+        // Show/hide pelmet section based on type selection
+        typeInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                if (input.value === 'roller') {
+                    pelmetSection.classList.remove('hidden');
+                } else {
+                    pelmetSection.classList.add('hidden');
+                }
+            });
+        });
+
+        // Close modals when clicking outside the content
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModalFunc();
+            }
+        });
+
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) {
+                closeShareModalFunc();
+            }
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (modal.classList.contains('hidden')) return;
+
+            if (e.key === 'Escape') {
+                closeModalFunc();
+            } else if (e.key === '+' || e.key === '=') {
+                zoomInFunc();
+            } else if (e.key === '-' || e.key === '_') {
+                zoomOutFunc();
+            } else if (e.key === '0') {
+                resetZoomFunc();
+            }
+        });
+
+        // Mouse wheel zoom
+        modalImage.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomInFunc();
+            } else {
+                zoomOutFunc();
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('search');
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toUpperCase();
+            const fabricItems = document.querySelectorAll('#catalog-grid > div');
+
+            fabricItems.forEach(item => {
+                const code = item.querySelector('h3').textContent;
+                if (code.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize floating labels
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.nextElementSibling.style.top = '0';
+                input.nextElementSibling.style.fontSize = '0.75rem';
+                input.nextElementSibling.style.color = '#3b82f6';
+            });
+
+            input.addEventListener('blur', () => {
+                if (input.value === '') {
+                    input.nextElementSibling.style.top = '50%';
+                    input.nextElementSibling.style.fontSize = '1rem';
+                    input.nextElementSibling.style.color = '#6b7280';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

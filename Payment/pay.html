@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Payment | Decor Drapes Instyle</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .animate-slideIn {
+      animation: slideIn 0.5s ease-out;
+    }
+  </style>
+  <script>
+    // Global variables
+    let upiLink = '';
+    let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    let redirectAttempted = false;
+
+    function loadPaymentDetails() {
+      const params = new URLSearchParams(window.location.search);
+
+      // Merchant
+      const storeName = "Decor Drapes Instyle";
+      const storeUPI = "decordrapes.instyle-3@okhdfcbank";
+
+      // Customer & quote
+      const customerName = params.get("customer") || "Guest";
+      const quoteNumber = params.get("quote") || "N/A";
+      const amount = params.get("amount") || "0";
+
+      // UPI link
+      upiLink = `upi://pay?pa=${storeUPI}&am=${amount}&cu=INR`;
+      document.title = `Pay ₹${amount} | ${storeName}`;
+
+      // Show payment card immediately
+      showPaymentCard(storeName, amount, customerName, quoteNumber, upiLink);
+      
+      // For mobile, add a small delay before attempting redirect to ensure DOM is ready
+      if (isMobile) {
+        setTimeout(attemptUPIRedirect, 300);
+      }
+    }
+    
+    function attemptUPIRedirect() {
+      if (!redirectAttempted) {
+        redirectAttempted = true;
+        console.log("Attempting UPI redirect...");
+        window.location.href = upiLink;
+        
+        // Show fallback after 2 seconds if redirect didn't work
+        setTimeout(() => {
+          if (!document.hidden) {
+            console.log("Redirect failed, showing payment options");
+            document.getElementById("redirect-fallback").classList.remove("hidden");
+          }
+        }, 2000);
+      }
+    }
+
+    function showPaymentCard(storeName, amount, customerName, quoteNumber, upiLink) {
+      document.getElementById("paymentCard").classList.remove("hidden");
+      document.getElementById("storeName").innerText = storeName;
+      document.getElementById("amount").innerText = "₹ " + amount;
+      document.getElementById("customerName").innerText = customerName;
+      document.getElementById("quoteNumber").innerText = "Quote #" + quoteNumber;
+      document.getElementById("payBtn").setAttribute('data-upi', upiLink);
+
+      // Generate QR code with minimal details (only pa and am)
+      const minimalUpiLink = `upi://pay?pa=decordrapes.instyle-3@okhdfcbank&am=${amount}`;
+
+      // QR for desktop (only minimal details)
+      QRCode.toCanvas(document.getElementById("qrcode"), minimalUpiLink, { width: 200 });
+
+      // Also generate for modal
+      QRCode.toCanvas(document.getElementById("modalQrcode"), minimalUpiLink, { width: 200 });
+      
+      // Set modal content
+      document.getElementById("modalCustomerName").innerText = customerName;
+      document.getElementById("modalQuoteNumber").innerText = "Quote #" + quoteNumber;
+      document.getElementById("modalAmount").innerText = "₹ " + amount;
+    }
+
+    function handlePayment() {
+      // Always try to open UPI app directly
+      const upiLink = document.getElementById("payBtn").getAttribute('data-upi');
+      
+      if (isMobile) {
+        // For mobile, try to redirect immediately
+        window.location.href = upiLink;
+        
+        // Show instructions after a delay if still on page
+        setTimeout(() => {
+          if (!document.hidden) {
+            document.getElementById("redirect-fallback").classList.remove("hidden");
+          }
+        }, 1000);
+        
+        return false;
+      } else {
+        // For desktop, show modal
+        showModal();
+        return false;
+      }
+    }
+
+    function showModal() {
+      document.getElementById("paymentModal").classList.remove("hidden");
+      setTimeout(() => {
+        document.getElementById("modalContent").classList.remove("opacity-0", "scale-95");
+        document.getElementById("modalContent").classList.add("opacity-100", "scale-100");
+      }, 10);
+    }
+
+    function hideModal() {
+      document.getElementById("modalContent").classList.remove("opacity-100", "scale-100");
+      document.getElementById("modalContent").classList.add("opacity-0", "scale-95");
+      setTimeout(() => {
+        document.getElementById("paymentModal").classList.add("hidden");
+      }, 300);
+    }
+  </script>
+</head>
+
+<body onload="loadPaymentDetails()" class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <!-- Payment Card -->
+  <div id="paymentCard" class="hidden w-full max-w-md bg-white shadow-2xl rounded-2xl overflow-hidden animate-fadeIn">
+
+    <!-- Top Bar -->
+    <div class="flex flex-col items-center text-center p-6 border-b bg-gray-50">
+      <img src="Logo.svg" alt="Decor Drapes Instyle" class="h-12 w-auto mb-2">
+      <p class="text-gray-500 text-sm">You are paying</p>
+      <h1 id="storeName" class="text-lg font-semibold text-gray-800"></h1>
+    </div>
+
+    <!-- Amount Highlight -->
+    <div class="px-6 py-8 text-center">
+      <p class="text-gray-500 text-sm mb-1">Amount</p>
+      <p id="amount" class="text-4xl font-bold text-green-600"></p>
+    </div>
+
+    <!-- Customer Details Card -->
+    <div class="px-6 pb-6">
+      <div class="border rounded-xl bg-gray-50 p-4 shadow-sm">
+        <div class="flex flex-col space-y-1">
+          <p id="customerName" class="text-base font-medium text-gray-800"></p>
+          <p id="quoteNumber" class="text-sm text-gray-500"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Redirect Fallback (hidden by default) -->
+    <div id="redirect-fallback" class="hidden px-6 pb-4">
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-yellow-700">
+              Redirect didn't work? 
+              <a href="javascript:void(0)" onclick="showModal()" class="font-medium underline text-yellow-700 hover:text-yellow-600">
+                Tap here for other payment options
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR (desktop only) -->
+    <div class="hidden md:flex flex-col items-center justify-center pb-6">
+      <canvas id="qrcode"></canvas>
+      <p class="text-xs text-gray-400 mt-2">Scan to pay</p>
+    </div>
+
+    <!-- Sticky Pay Button -->
+    <div class="p-6 border-t bg-white">
+      <a id="payBtn" href="javascript:void(0)" onclick="return handlePayment()"
+        class="block w-full text-center py-3 bg-green-600 text-white font-semibold rounded-xl shadow hover:bg-green-700 transition cursor-pointer">
+        Pay Now
+      </a>
+
+      <!-- Supported Apps -->
+      <div class="flex items-center justify-center space-x-3 mt-4">
+        <!-- GPay -->
+        <div class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs font-bold"><svg
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px" baseProfile="basic">
+            <path fill="#ed5748"
+              d="M42.858,11.975c-4.546-2.624-10.359-1.065-12.985,3.481L23.25,26.927	c-1.916,3.312,0.551,4.47,3.301,6.119l6.372,3.678c2.158,1.245,4.914,0.506,6.158-1.649l6.807-11.789	C48.176,19.325,46.819,14.262,42.858,11.975z" />
+            <path fill="#fcc60e"
+              d="M35.365,16.723l-6.372-3.678c-3.517-1.953-5.509-2.082-6.954,0.214l-9.398,16.275	c-2.624,4.543-1.062,10.353,3.481,12.971c3.961,2.287,9.024,0.93,11.311-3.031l9.578-16.59	C38.261,20.727,37.523,17.968,35.365,16.723z" />
+            <path fill="#48b564"
+              d="M36.591,8.356l-4.476-2.585c-4.95-2.857-11.28-1.163-14.137,3.787L9.457,24.317	c-1.259,2.177-0.511,4.964,1.666,6.22l5.012,2.894c2.475,1.43,5.639,0.582,7.069-1.894l9.735-16.86	c2.017-3.492,6.481-4.689,9.974-2.672L36.591,8.356z" />
+            <path fill="#2c85eb"
+              d="M19.189,13.781l-4.838-2.787c-2.158-1.242-4.914-0.506-6.158,1.646l-5.804,10.03	c-2.857,4.936-1.163,11.252,3.787,14.101l3.683,2.121l4.467,2.573l1.939,1.115c-3.442-2.304-4.535-6.92-2.43-10.555l1.503-2.596	l5.504-9.51C22.083,17.774,21.344,15.023,19.189,13.781z" />
+          </svg></div>
+        <!-- PhonePe -->
+        <div class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs font-bold"><svg
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
+            <path fill="#4527a0"
+              d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5	V37z" />
+            <path fill="#fff"
+              d="M32.267,20.171c0-0.681-0.584-1.264-1.264-1.264h-2.334l-5.35-6.25	c-0.486-0.584-1.264-0.778-2.043-0.584l-1.848,0.584c-0.292,0.097-0.389,0.486-0.195,0.681l5.836,5.666h-8.851	c-0.292,0-0.486,0.195-0.486,0.486v0.973c0,0.681,0.584,1.506,1.264,1.506h1.972v4.305c0,3.502,1.611,5.544,4.723,5.544	c0.973,0,1.378-0.097,2.35-0.486v3.112c0,0.875,0.681,1.556,1.556,1.556h0.786c0.292,0,0.584-0.292,0.584-0.584V21.969h2.812	c0.292,0,0.486-0.195,0.486-0.486V20.171z M26.043,28.413c-0.584,0.292-1.362,0.389-1.945,0.389c-1.556,0-2.097-0.778-2.097-2.529	v-4.305h4.043V28.413z" />
+          </svg></div>
+        <!-- Paytm -->
+        <div class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs font-bold"><svg
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px">
+            <path fill="#0d47a1"
+              d="M5.446 18.01H.548c-.277 0-.502.167-.503.502L0 30.519c-.001.3.196.45.465.45.735 0 1.335 0 2.07 0C2.79 30.969 3 30.844 3 30.594 3 29.483 3 28.111 3 27l2.126.009c1.399-.092 2.335-.742 2.725-2.052.117-.393.14-.733.140-1.137l.110-2.862C7.999 18.946 6.949 18.181 5.446 18.01zM4.995 23.465C4.995 23.759 4.754 24 4.461 24H3v-3h1.461c.293 0 .534.24.534.535V23.465zM13.938 18h-3.423c-.260 0-.483.80-.483.351 0 .706 0 1.495 0 2.201C10.06 20.846 10.263 21 10.552 21h2.855c.594 0 .532.972 0 1H11.84C10.101 22 9 23.562 9 25.137c0 .420.005 1.406 0 1.863-.008.651-.014 1.311.112 1.899C9.336 29.939 10.235 31 11.597 31h4.228c.541 0 1.173-.474 1.173-1.101v-8.274C17.026 19.443 15.942 18.117 13.938 18zM14 27.55c0 .248-.202.45-.448.45h-1.105C12.201 28 12 27.798 12 27.55v-2.101C12 25.202 12.201 25 12.447 25h1.105C13.798 25 14 25.202 14 25.449V27.55zM18 18.594v5.608c.124 1.6 1.608 2.798 3.171 2.798h1.414c.597 0 .561.969 0 .969H19.49c-.339 0-.462.177-.462.476v2.152c0 .226.183.396.422.396h2.959c2.416 0 3.592-1.159 3.591-3.757v-8.84c0-.276-.175-.383-.342-.383h-2.302c-.224 0-.355.243-.355.422v5.218c0 .199-.111.316-.29.316H21.41c-.264 0-.409-.143-.409-.396v-5.058C21 18.218 20.88 18 20.552 18c-.778 0-1.442 0-2.22 0C18.067 18 18 18.263 18 18.594L18 18.594z" />
+            <path fill="#00adee"
+              d="M27.038 20.569v-2.138c0-.237.194-.431.43-.431H28c1.368-.285 1.851-.62 2.688-1.522.514-.557.966-.704 1.298-.113L32 18h1.569C33.807 18 34 18.194 34 18.431v2.138C34 20.805 33.806 21 33.569 21H32v9.569C32 30.807 31.806 31 31.57 31h-2.14C29.193 31 29 30.807 29 30.569V21h-1.531C27.234 21 27.038 20.806 27.038 20.569L27.038 20.569zM42.991 30.465c0 .294-.244.535-.539.535h-1.91c-.297 0-.54-.241-.54-.535v-6.623-1.871c0-1.284-2.002-1.284-2.002 0v8.494C38 30.759 37.758 31 37.461 31H35.54C35.243 31 35 30.759 35 30.465V18.537C35 18.241 35.243 18 35.54 18h1.976c.297 0 .539.241.539.537v.292c1.32-1.266 3.302-.973 4.416.228 2.097-2.405 5.69-.262 5.523 2.375 0 2.916-.026 6.093-.026 9.033 0 .294-.244.535-.538.535h-1.891C45.242 31 45 30.759 45 30.465c0-2.786 0-5.701 0-8.44 0-1.307-2-1.37-2 0v8.440H42.991z" />
+          </svg></div>
+        <!-- BHIM UPI -->
+        <div class="w-4 h-4  rounded-full flex items-center justify-center text-white text-xs font-bold"><svg
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px" baseProfile="basic">
+            <polygon fill="#388e3c" points="29,4 18,45 40,24" />
+            <polygon fill="#f57c00" points="21,3 10,44 32,23" />
+          </svg></div>
+      </div>
+      <p class="text-xs text-gray-500 text-center mt-2">We support all UPI apps</p>
+    </div>
+  </div>
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="hidden fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-4 w-full max-w-md shadow-lg rounded-xl bg-white">
+      <div id="modalContent" class="transition-all duration-200 transform opacity-0 scale-95">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between p-3 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-800 flex items-center gap-2">
+            Payment
+          </h3>
+          <button onclick="hideModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-5 space-y-4 text-gray-700 text-sm">
+
+          <!-- Warning Message -->
+          <div
+            class="flex items-center gap-2 bg-yellow-50 border-l-2 border-yellow-400 px-4 py-2 rounded-md text-yellow-800 text-sm">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>You don’t have a UPI payment app installed. Scan the QR code below to pay.</span>
+          </div>
+
+          <!-- Payment Details -->
+          <div class="bg-gray-50 p-3 rounded-md space-y-2 text-gray-800">
+            <div class="flex justify-between">
+              <span class="flex items-center gap-1"><i class="fa-solid fa-user text-gray-500"></i> <span
+                  id="modalCustomerName" class="font-medium"></span></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="flex items-center gap-1"><i class="fa-solid fa-file-invoice text-gray-500"></i> Quote <span
+                  id="modalQuoteNumber"></span></span>
+            </div>
+            <div class="flex justify-between font-semibold pt-2 border-t border-gray-200">
+              <span class="flex items-center gap-1"><i class="fa-solid fa-indian-rupee-sign text-gray-600"></i>
+                Amount</span>
+              <span id="modalAmount"></span>
+            </div>
+          </div>
+
+          <!-- QR Code & Copy -->
+          <div class="flex flex-col items-center gap-3">
+            <canvas id="modalQrcode"></canvas>
+            <!-- UPI ID with copy button on a single line -->
+            <div class="flex justify-center items-center gap-2 text-gray-700 text-sm mt-2">
+              <span id="upiIdDisplay">decordrapes.instyle-3@okhdfcbank</span>
+              <button onclick="copyUpiId()"
+                class="text-gray-700 rounded hover:bg-gray-100 flex items-center gap-1 transition">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </div>
+
+            <!-- Hidden UPI ID input -->
+            <input type="hidden" id="upiId" value="decordrapes.instyle-3@okhdfcbank">
+
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-end p-3 border-t border-gray-200">
+          <button onclick="hideModal()"
+            class="px-3 py-1 text-gray-700 rounded hover:bg-gray-100 transition flex items-center gap-1 text-sm">
+            <i class="fa-solid fa-xmark"></i>
+            Close
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast"
+    class="fixed bottom-5 right-5 bg-gray-800 text-white px-4 py-2 rounded shadow-md text-sm opacity-0 transition-opacity duration-300 z-50">
+  </div>
+
+  <script>
+    function copyUpiId() {
+      const upiField = document.getElementById("upiId");
+      navigator.clipboard.writeText(upiField.value).then(() => showToast("UPI ID copied"));
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.remove("opacity-0");
+      toast.classList.add("opacity-100");
+      setTimeout(() => {
+        toast.classList.remove("opacity-100");
+        toast.classList.add("opacity-0");
+      }, 2000);
+    }
+  </script>
+</body>
+
+</html>

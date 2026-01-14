@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Price List | Decor Drapes Instyle</title>
+    <meta name="description"
+        content="Explore the updated price list for our products and services at Decor Drapes Instyle. Clear, detailed, and easy to navigate.">
+
+    <!-- FAVICONS -->
+    <link rel="icon" href="/assets/img/favicons/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png">
+    <link rel="manifest" href="/assets/img/favicons/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- OPEN GRAPH -->
+    <meta property="og:title" content="Decor Drapes Instyle - Price List">
+    <meta property="og:description"
+        content="Browse our updated price list for window treatments, fabrics, and installation services.">
+    <meta property="og:image" content="https://pricelist.decordrapesinstyle.com/assets/img/social/og_image.png">
+    <meta property="og:url" content="https://pricelist.decordrapesinstyle.com">
+    <meta property="og:type" content="website">
+
+    <!-- TWITTER CARD -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Price List | Decor Drapes Instyle">
+    <meta name="twitter:description"
+        content="Browse our updated price list for window treatments, fabrics, and installation services.">
+    <meta name="twitter:image" content="https://pricelist.decordrapesinstyle.com/assets/img/social/og_image.png">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a202c;
+            --primary-light: #f7fafc;
+            --accent-color: #2d3748;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-white: #ffffff;
+            --bg-gray: #f7fafc;
+
+            --gold-strong: #b8860b;
+            --skyblue-vibrant: #38bdf8;
+            --skyblue-muted: #a8d4e6;
+            --gold-for-skyblue: #b68b2a;
+            --gold-muted: #b89a55;
+            --gold-light-muted: #e6d7a8;
+            --gold-darkest: #4f3b00;
+
+            --border-color: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .product-name {
+            color: var(--skyblue-vibrant);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .header {
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .brand-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .brand-logo {
+            height: 80px;
+            width: auto;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 1rem 0 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .category-card {
+            background-color: var(--bg-white);
+            border-radius: 10px;
+            padding: 1.25rem 0.75rem;
+            box-shadow: var(--shadow-card);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            min-height: 110px;
+            justify-content: center;
+        }
+
+        .category-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-icon {
+            display: none;
+            width: 32px;
+            height: 32px;
+            margin-bottom: 0.75rem;
+            color: var(--primary-color);
+            opacity: 0.8;
+        }
+
+        .category-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--skyblue-vibrant);
+            line-height: 1.3;
+        }
+
+        .product-count {
+            display: inline-block;
+            background-color: var(--gold-light-muted);
+            color: var(--gold-darkest);
+            padding: 0.25rem 0.75rem;
+            border-radius: 13px;
+            font-size: 0.6rem;
+            font-weight: 400;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-button:hover {
+            color: var(--accent-color);
+        }
+
+        .back-button svg {
+            margin-right: 0.5rem;
+        }
+
+        .category-details {
+            background-color: var(--bg-white);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .export-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+
+        .export-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .export-btn svg {
+            margin-right: 0.5rem;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .products-table th {
+            text-align: left;
+            padding: 1rem;
+            background-color: var(--bg-gray);
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .products-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .products-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .products-table tr:hover {
+            background-color: var(--bg-gray);
+        }
+
+        .products-cards {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .product-card {
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .product-card:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .product-header-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            align-items: center;
+            font-size: 1rem;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .product-gst {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--gold-light-muted);
+            color: var(--gold-darkest);
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        .product-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .detail-item {
+            display: flex;
+            gap: 0.5rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-details:has(.detail-item:nth-last-child(1):first-child) .detail-item {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .detail-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .terms-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .terms-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .terms-list {
+            padding-left: 1.5rem;
+        }
+
+        .terms-list li {
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .products-table {
+                display: none;
+            }
+
+            .products-cards {
+                display: flex;
+            }
+
+            .product-details {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-details {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .categories-details {
+                padding: 0.5rem;
+            }
+
+            .product-details {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 8px;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        #pdf-content {
+            display: none;
+        }
+
+        .last-updated {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* PDF print styles */
+        @media print {
+            :root {
+                --bg-gray: #ffffff;
+            }
+
+            @page {
+                margin: 0.5in;
+                size: A4;
+                background-color: white;
+            }
+
+            body * {
+                visibility: hidden;
+                background-color: white;
+            }
+
+            #pdf-content,
+            #pdf-content * {
+                visibility: visible;
+            }
+
+            #pdf-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block;
+                padding: 0;
+                margin: 0;
+            }
+
+            .pdf-page {
+                page-break-after: always;
+            }
+
+            .pdf-page:last-child {
+                page-break-after: auto;
+            }
+
+            .pdf-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .pdf-logo {
+                width: auto;
+                height: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                border-radius: 4px;
+            }
+
+            .pdf-info {
+                text-align: right;
+                font-size: 12px;
+                color: #64748b;
+            }
+
+            .pdf-category {
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 0.5rem;
+                color: #1e293b;
+            }
+
+            .pdf-date {
+                font-size: 12px;
+                color: #64748b;
+            }
+
+            .pdf-address {
+                margin-top: 0.5rem;
+                font-size: 10px;
+            }
+
+            .pdf-table-container {
+                width: 100%;
+                margin: 0 auto;
+            }
+
+            .pdf-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+                font-size: 12px;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .pdf-table thead {
+                display: table-header-group;
+            }
+
+            .pdf-table th {
+                text-align: left;
+                padding: 0.75rem;
+                background-color: #f1f5f9;
+                font-weight: 600;
+                color: #475569;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .pdf-table td {
+                padding: 0.75rem;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .pdf-table tr {
+                page-break-inside: avoid;
+            }
+
+            .pdf-terms {
+                margin-top: 1.5rem;
+                padding-top: 1rem;
+                border-top: 1px solid #e2e8f0;
+            }
+
+            .pdf-terms-title {
+                font-size: 14px;
+                font-weight: bold;
+                margin-bottom: 0.75rem;
+                color: #1e293b;
+            }
+
+            .pdf-terms-list {
+                font-size: 10px;
+                padding-left: 1rem;
+            }
+
+            .pdf-terms-list li {
+                margin-bottom: 0.25rem;
+            }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .export-btn {
+                align-self: flex-start;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.75rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .brand-logo {
+                height: 60px;
+            }
+
+            .category-card {
+                padding: 1rem 0.5rem;
+                min-height: 100px;
+            }
+
+            .category-details {
+                padding: 1.25rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .category-details {
+                padding: 0.75rem;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .empty-state svg {
+            display: block;
+            margin: 0 auto 1rem;
+            opacity: 0.8;
+        }
+
+        .fullscreen-shimmer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            width: 100%;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .shimmer-text {
+            font-size: 28px;
+            font-weight: 600;
+            color: transparent;
+            background-size: 200% 100%;
+            background-repeat: no-repeat;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shimmerText 1.5s ease-in-out infinite;
+            padding: 0.5rem 1rem;
+        }
+
+        @keyframes shimmerText {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header" id="main-header">
+        <div class="container">
+            <div class="brand-section">
+                <img class="brand-logo"
+                    src="https://res.cloudinary.com/dmiwq3l2s/image/upload/v1764322049/zrsn9atwtn42z5ivn4d8.svg"
+                    alt="Brand Logo">
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <h1 class="page-title" id="main-title">Price List</h1>
+
+        <div id="categories-view">
+            <div class="categories-grid" id="categories-container">
+                <!-- Categories here -->
+            </div>
+        </div>
+
+        <div id="category-details-view" style="display: none;">
+            <div class="top-nav">
+                <button class="back-button" id="back-button">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Categories
+                </button>
+                <button class="export-btn" id="export-pdf-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M4.66675 6.66667L8.00008 10L11.3334 6.66667" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Export PDF
+                </button>
+            </div>
+
+            <h2 class="page-title" id="category-page-title">Category Name</h2>
+
+            <div class="category-details">
+                <div class="category-header">
+                    <div id="last-updated-container">
+                        <!-- Last updated date -->
+                    </div>
+
+                </div>
+                <div id="products-container">
+                    <!-- Products table -->
+                </div>
+                <div id="terms-container" class="terms-section">
+                    <!-- Terms and conditions -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="pdf-content">
+    </div>
+
+    <script>
+
+        document.addEventListener("click", () => {
+            navigator.vibrate?.(13);
+        });
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAD4piXNNzWi3z1riCEl07NHnjg2IHcFhc",
+            authDomain: "decor-drapes.firebaseapp.com",
+            databaseURL: "https://decor-drapes-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "decor-drapes",
+            storageBucket: "decor-drapes.firebasestorage.app",
+            messagingSenderId: "175917446618",
+            appId: "1:175917446618:web:1567dfe6a9d9c43e873ce3",
+            measurementId: "G-8W8BZMLVZC"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const categoriesView = document.getElementById('categories-view');
+        const categoryDetailsView = document.getElementById('category-details-view');
+        const categoriesContainer = document.getElementById('categories-container');
+        const backButton = document.getElementById('back-button');
+        const mainTitle = document.getElementById('main-title');
+        const categoryPageTitle = document.getElementById('category-page-title');
+        const lastUpdatedContainer = document.getElementById('last-updated-container');
+        const productsContainer = document.getElementById('products-container');
+        const termsContainer = document.getElementById('terms-container');
+        const exportPdfBtn = document.getElementById('export-pdf-btn');
+        const mainHeader = document.getElementById('main-header');
+        const pdfContent = document.getElementById('pdf-content');
+
+        let currentCategory = null;
+        let columnNames = [];
+        let termsAndConditions = [];
+
+        const fieldIcons = {
+            'price': `<svg xmlns="http://www.w3.org/2000/svg" class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee-icon lucide-indian-rupee"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>`,
+            'simple price': `<svg xmlns="http://www.w3.org/2000/svg" class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee-icon lucide-indian-rupee"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>`,
+            'premium price': `<svg xmlns="http://www.w3.org/2000/svg" class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee-icon lucide-indian-rupee"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>`,
+            'gst': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`,
+            'media': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
+            'roller': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>`,
+            'uv': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>`,
+            'regular print': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><path d="M9 20h6"></path><rect x="4" y="7" width="16" height="13" rx="2"></rect></svg>`,
+            'uv print': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
+            'with pelmet': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`,
+            'default': `<svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`
+        };
+
+        const categoryIcons = {
+            'Sunscreens': `<svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`,
+            'Blinds': `<svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`,
+            'Wallpapers': `<svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`,
+            'Curtains': `<svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h20M2 17h20M12 7v10M2 7l4 10M22 7l-4 10"/></svg>`,
+            'Fabrics': `<svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>`,
+            'default': `<svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9m3 10H5m13-5H5m14 5H9"/></svg>`
+        };
+
+        function formatRelativeTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+
+            const startOfDayDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const startOfDayNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            const diffTime = startOfDayNow - startOfDayDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) return "Today";
+            if (diffDays === 1) return "Yesterday";
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+            return `${Math.floor(diffDays / 365)} years ago`;
+        }
+
+        function formatFullDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function generateProductId(categoryName, productName) {
+            return `${categoryName.toLowerCase().replace(/\s+/g, '-')}-${productName.toLowerCase().replace(/\s+/g, '-')}`;
+        }
+
+        function getFieldIcon(fieldName) {
+            return fieldIcons[fieldName.toLowerCase()] || fieldIcons.default;
+        }
+
+        function getCategoryIcon(categoryName) {
+            return categoryIcons[categoryName] || categoryIcons.default;
+        }
+
+        function formatFieldName(fieldName) {
+            if (fieldName === 'product name') return 'Product';
+            if (fieldName === 'simple price') return 'Price';
+            if (fieldName === 'preimum price') return 'Premium';
+            if (fieldName === 'with pelmet') return 'With Pelmet';
+            if (fieldName === 'regular print') return 'Regular Print';
+            if (fieldName === 'uv print') return 'UV Print';
+            return fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+        }
+
+        function formatFieldValue(fieldName, value) {
+            if (fieldName.toLowerCase().includes('price')) {
+                return `₹${value}`;
+            }
+            if (fieldName.toLowerCase() === 'gst') {
+                return `${(value * 100).toFixed(0)}%`;
+            }
+            if (value === 0) {
+                return '-';
+            }
+            return value;
+        }
+
+        function fetchTermsAndConditions() {
+            database.ref('quotations/meta/termsAndConditions').once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && Array.isArray(data)) {
+                    termsAndConditions = data;
+                } else {
+                    termsAndConditions = [
+                        "Prices are subject to change without notice",
+                        "All prices are exclusive of applicable taxes",
+                        "Minimum order quantity may apply",
+                        "Delivery charges extra"
+                    ];
+                }
+            });
+        }
+
+        function handleUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            const product = urlParams.get('product');
+
+            if (category) {
+                database.ref(`pricelist/${category}`).once('value', (snapshot) => {
+                    const categoryData = snapshot.val();
+                    if (categoryData) {
+                        showCategoryDetails(category, categoryData);
+
+                        if (product) {
+                            setTimeout(() => {
+                                const productElement = document.getElementById(product);
+                                if (productElement) {
+                                    productElement.scrollIntoView({ behavior: 'smooth' });
+                                    productElement.style.backgroundColor = 'var(--primary-light)';
+                                    setTimeout(() => {
+                                        productElement.style.backgroundColor = '';
+                                    }, 2000);
+                                }
+                            }, 500);
+                        }
+                    }
+                });
+            }
+        }
+
+        function fetchCategories() {
+            categoriesContainer.innerHTML = `
+                <div class="fullscreen-shimmer">
+                    <div class="shimmer-text">Loading categories...</div>
+                </div>
+            `;
+
+            database.ref('pricelist').on('value', (snapshot) => {
+                const data = snapshot.val();
+                renderCategories(data);
+
+                handleUrlParams();
+            }, (error) => {
+                console.error('Error fetching data:', error);
+                categoriesContainer.innerHTML = '<div class="empty-state">Failed to load categories. Please try again.</div>';
+            });
+        }
+
+        function renderCategories(data) {
+            if (!data) {
+                categoriesContainer.innerHTML = '<div class="empty-state">No categories found.</div>';
+                return;
+            }
+
+            categoriesContainer.innerHTML = '';
+
+            Object.entries(data).forEach(([categoryName, categoryData]) => {
+                const productCount = categoryData.products ? Object.keys(categoryData.products).length : 0;
+
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                categoryCard.innerHTML = `
+                    <div class="category-icon">${getCategoryIcon(categoryName)}</div>
+                    <div class="category-name">${categoryName}</div>
+                    <div class="product-count">${productCount} ${productCount === 1 ? 'item' : 'items'}</div>
+                `;
+
+                categoryCard.addEventListener('click', () => {
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('category', categoryName);
+                    window.history.pushState({}, '', newUrl);
+
+                    showCategoryDetails(categoryName, categoryData);
+                });
+
+                categoriesContainer.appendChild(categoryCard);
+            });
+        }
+
+        function extractColumnNames(products) {
+            const allKeys = new Set();
+
+            products.forEach(product => {
+                Object.keys(product).forEach(key => {
+                    if (key !== 'id' && key !== 'serial') {
+                        allKeys.add(key);
+                    }
+                });
+            });
+
+            const priorityFields = ['product name', 'media', 'price', 'simple price', 'premium price', 'preimum price', 'gst'];
+            const sortedKeys = Array.from(allKeys).sort((a, b) => {
+                const aIndex = priorityFields.indexOf(a);
+                const bIndex = priorityFields.indexOf(b);
+
+                if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+                if (aIndex !== -1) return -1;
+                if (bIndex !== -1) return 1;
+
+                return a.localeCompare(b);
+            });
+
+            return sortedKeys;
+        }
+
+        function showCategoryDetails(categoryName, categoryData) {
+            currentCategory = { name: categoryName, ...categoryData };
+
+            categoriesView.style.display = 'none';
+            categoryDetailsView.style.display = 'block';
+            mainTitle.style.display = 'none';
+            mainHeader.style.display = 'none';
+
+            categoryPageTitle.textContent = `${categoryName} Price List`;
+
+            lastUpdatedContainer.innerHTML = `
+                <div class="last-updated">Last updated: ${formatFullDate(categoryData.lastUpdated)} (${formatRelativeTime(categoryData.lastUpdated)})</div>
+            `;
+
+            if (categoryData.products) {
+                const products = Object.values(categoryData.products);
+                products.sort((a, b) => a.serial - b.serial);
+
+                columnNames = extractColumnNames(products);
+
+                let tableHTML = `
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Serial</th>
+                `;
+
+                columnNames.forEach(column => {
+                    tableHTML += `<th>${formatFieldName(column)}</th>`;
+                });
+
+                tableHTML += `
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                let cardsHTML = `<div class="products-cards">`;
+
+                products.forEach(product => {
+                    const productName = product['product name'] || product['media'] || `Product ${product.serial}`;
+                    const productId = generateProductId(categoryName, productName);
+
+                    tableHTML += `
+                        <tr id="${productId}">
+                            <td>${product.serial}</td>
+                    `;
+
+                    columnNames.forEach(column => {
+                        tableHTML += `<td>${formatFieldValue(column, product[column])}</td>`;
+                    });
+
+                    tableHTML += `</tr>`;
+
+                    cardsHTML += `
+                        <div class="product-card" id="${productId}-mobile">
+                            <div class="product-header-row">
+                                <div class="product-name">${product.serial}. ${productName}</div>
+                                <div class="product-gst">GST ${formatFieldValue('gst', product['gst'])}</div>
+                            </div>
+                            <div class="product-details">
+                    `;
+
+                    columnNames.forEach(column => {
+                        if (
+                            column !== 'product name' &&
+                            column !== 'media' &&
+                            column !== 'gst' &&
+                            product[column] !== undefined
+                        ) {
+                            cardsHTML += `
+                                <div class="detail-item">
+                                    <div class="detail-label">
+                                        ${getFieldIcon(column)}
+                                        ${formatFieldName(column)}
+                                    </div>
+                                    <div class="detail-value">${formatFieldValue(column, product[column])}</div>
+                                </div>
+                            `;
+                        }
+                    });
+
+
+                    cardsHTML += `
+                            </div>
+                        </div>
+                    `;
+                });
+
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+
+                cardsHTML += `</div>`;
+
+                productsContainer.innerHTML = tableHTML + cardsHTML;
+
+                renderTermsAndConditions();
+            } else {
+                productsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <svg width="160" height="160" viewBox="0 0 200 200" fill="none">
+                            <rect x="20" y="60" width="160" height="100" rx="12" fill="#f3f4f6"/>
+                            <rect x="40" y="80" width="120" height="12" rx="6" fill="#e5e7eb"/>
+                            <rect x="40" y="100" width="100" height="12" rx="6" fill="#e5e7eb"/>
+                            <rect x="40" y="120" width="80" height="12" rx="6" fill="#e5e7eb"/>
+                            <circle cx="140" cy="40" r="16" stroke="#d1d5db" stroke-width="4"/>
+                            <path d="M150 50 L165 65" stroke="#d1d5db" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                        <p>No products found in this category.</p>
+                    </div>`;
+                termsContainer.innerHTML = '';
+            }
+
+        }
+
+        function renderTermsAndConditions() {
+            if (termsAndConditions.length > 0) {
+                let termsHTML = `
+                    <div class="terms-title">Terms & Conditions</div>
+                    <ul class="terms-list">
+                `;
+
+                termsAndConditions.forEach(term => {
+                    termsHTML += `<li>${term}</li>`;
+                });
+
+                termsHTML += `</ul>`;
+
+                termsContainer.innerHTML = termsHTML;
+            } else {
+                termsContainer.innerHTML = '';
+            }
+        }
+
+        function generatePDF() {
+            if (!currentCategory) return;
+            pdfContent.innerHTML = '';
+            const products = currentCategory.products ? Object.values(currentCategory.products) : [];
+            products.sort((a, b) => a.serial - b.serial);
+            const chunkSize = products.length > 15 ? 18 : 15;
+            const productChunks = [];
+            for (let i = 0; i < products.length; i += chunkSize) {
+                productChunks.push(products.slice(i, i + chunkSize));
+            }
+            productChunks.forEach((chunk, pageIndex) => {
+                const page = document.createElement('div');
+                page.className = 'pdf-page';
+
+                let tableHTML = `
+                    <div class="pdf-header">
+                        <a href="https://www.decordrapesinstyle.com" target="_blank">
+                            <svg class="pdf-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="16.721" height="6.222" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;fill-rule:evenodd;clip-rule:evenodd" viewBox="0 0 174.17 64.81">
+                                <defs>
+                                    <linearGradient id="id0" x1="49.71" x2="49.71" y1="47.77" y2="92.99" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-opacity:1;stop-color:#00a0e4"/>
+                                    <stop offset="1" style="stop-opacity:1;stop-color:white"/>
+                                    </linearGradient>
+                                    <linearGradient xlink:href="#id0" id="id1" x1="43.92" x2="43.92" y1="12.74" y2="92.72" gradientUnits="userSpaceOnUse"/>
+                                    <linearGradient id="id2" x1="-15.54" x2="65.26" y1="33.03" y2="33.03" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-opacity:1;stop-color:#fcf290"/>
+                                    <stop offset=".027" style="stop-opacity:1;stop-color:#f6d665"/>
+                                    <stop offset=".059" style="stop-opacity:1;stop-color:#efb939"/>
+                                    <stop offset=".169" style="stop-opacity:1;stop-color:#d9a133"/>
+                                    <stop offset=".49" style="stop-opacity:1;stop-color:#c3892c"/>
+                                    <stop offset=".694" style="stop-opacity:1;stop-color:#e1a934"/>
+                                    <stop offset=".851" style="stop-opacity:1;stop-color:#ffca3d"/>
+                                    <stop offset="1" style="stop-opacity:1;stop-color:#dabf7f"/>
+                                    </linearGradient>
+                                    <linearGradient xlink:href="#id0" id="id3" x1="141.62" x2="141.62" y1="35.62" y2="105.7" gradientUnits="userSpaceOnUse"/>
+                                    <linearGradient xlink:href="#id2" id="id4" x1="115.42" x2="174.87" y1="62.05" y2="62.05" gradientUnits="userSpaceOnUse"/>
+                                    <linearGradient xlink:href="#id2" id="id5" x1="43.59" x2="166.72" y1="18.8" y2="18.8" gradientUnits="userSpaceOnUse"/>
+                                </defs>
+                                <g id="Layer_x0020_1">
+                                    <g id="_433619328">
+                                    <path d="M75.05 7.76c1.61 0 3.06.31 4.36.93 1.3.62 2.35 1.44 3.15 2.45.8 1.02 1.41 2.17 1.85 3.47a12.464 12.464 0 0 1 0 7.94c-.44 1.3-1.05 2.45-1.85 3.46-.8 1.02-1.85 1.84-3.15 2.46-1.3.62-2.75.93-4.36.93h-7.78c.74-.14 1.24-.46 1.51-.94.27-.48.41-1.13.41-1.94V10.64c0-.81-.13-1.46-.41-1.94-.27-.49-.77-.8-1.51-.94h7.78zm0 20.99c1.13.01 2.14-.35 3.02-1.09.89-.74 1.56-1.7 2.02-2.89.46-1.2.8-2.52 1.02-3.96.22-1.44.22-2.89 0-4.35a19.69 19.69 0 0 0-1.01-3.97c-.45-1.2-1.13-2.18-2.02-2.93-.89-.76-1.9-1.14-3.03-1.15h-2.21v20.34h2.21zm11.63.65c1.27-.24 1.91-1.32 1.91-3.23V10.98c0-1.91-.64-2.99-1.91-3.23h14.75l.72 2.72v2.72c-.16-1.44-.7-2.6-1.64-3.48-.94-.87-2.11-1.31-3.5-1.31h-4.76v9.84h2.4c.67 0 1.22-.05 1.67-.14.44-.09.85-.25 1.23-.5.37-.24.67-.59.88-1.04.22-.46.37-1.04.47-1.73v7.47c-.18-1.34-.59-2.24-1.25-2.7-.65-.46-1.66-.69-3-.69h-2.4v9.83h4.76c1.39 0 2.55-.44 3.5-1.32.94-.88 1.49-2.04 1.65-3.48v2.73l-.72 2.72H86.69zm27.78.33c-1.3 0-2.49-.2-3.59-.62-1.1-.42-2.04-.98-2.81-1.7-.78-.72-1.43-1.55-1.98-2.5-.54-.95-.95-1.96-1.21-3.03-.26-1.07-.39-2.17-.39-3.31 0-1.13.13-2.23.39-3.31.26-1.07.67-2.08 1.21-3.03.55-.95 1.2-1.78 1.98-2.5.77-.71 1.71-1.28 2.81-1.7 1.1-.41 2.3-.62 3.59-.62.63 0 1.12 0 1.48.02.36.02.87.07 1.51.17.65.11 1.33.26 2.04.46v5.46c-.13-.96-.41-1.85-.85-2.67a5.956 5.956 0 0 0-1.75-2.01c-.74-.52-1.55-.79-2.44-.79-.8 0-1.54.21-2.22.62-.69.41-1.26.97-1.74 1.66s-.89 1.49-1.22 2.39c-.34.91-.59 1.85-.75 2.84-.16.99-.24 1.98-.24 2.98 0 1.4.19 2.7.56 3.92.37 1.22.86 2.25 1.48 3.1.62.85 1.35 1.56 2.19 2.09.83.54 1.7.87 2.6 1 .89.13 1.83.02 2.79-.31.97-.33 1.87-.9 2.72-1.7-.49.96-1.31 1.71-2.46 2.24-1.15.54-2.39.8-3.7.8zm12.8-21.36c1.3-.63 2.76-.95 4.36-.95 1.61 0 3.06.31 4.36.95 1.3.64 2.35 1.48 3.15 2.54.8 1.05 1.41 2.24 1.85 3.57.44 1.33.65 2.7.65 4.09 0 1.4-.22 2.76-.65 4.09-.43 1.33-1.05 2.53-1.85 3.58-.8 1.05-1.85 1.89-3.15 2.53-1.3.64-2.75.95-4.36.95-1.6 0-3.06-.31-4.36-.95-1.31-.63-2.35-1.48-3.16-2.53-.8-1.06-1.41-2.25-1.85-3.58-.44-1.33-.65-2.69-.65-4.09 0-1.39.22-2.76.65-4.09.43-1.33 1.05-2.52 1.85-3.57.8-1.05 1.85-1.89 3.16-2.54zm1.33 19.53c.88.78 1.9 1.16 3.02 1.16 1.13 0 2.15-.39 3.04-1.15.89-.77 1.57-1.77 2.03-3 .45-1.24.8-2.6 1.01-4.09.22-1.5.22-2.99 0-4.48-.22-1.49-.56-2.85-1.01-4.09-.46-1.24-1.14-2.25-2.03-3.02-.89-.77-1.9-1.16-3.04-1.16-1.13 0-2.14.38-3.02 1.15-.89.77-1.56 1.76-2.02 3-.46 1.23-.79 2.6-1.01 4.09-.22 1.5-.22 2.98 0 4.48.22 1.49.55 2.85 1.01 4.09.46 1.24 1.13 2.24 2.02 3.02zm26.58-7.89c.59.33 1.15.76 1.67 1.3.52.53.96 1.09 1.33 1.65.37.56.73 1.16 1.09 1.78.36.62.72 1.2 1.11 1.75.38.55.79 1.04 1.23 1.48.44.44.98.79 1.6 1.05.63.26 1.31.39 2.07.39-4.52.73-7.31.22-8.37-1.52-.28-.41-.65-1.02-1.12-1.82-.47-.8-.89-1.47-1.23-2.01-.34-.55-.73-1.11-1.16-1.7-.43-.59-.85-1.04-1.25-1.35-.41-.3-.79-.46-1.17-.46h-2.11v5.62c0 1.91.63 2.98 1.9 3.23h-7.48c1.27-.24 1.91-1.32 1.91-3.23V10.98c0-1.91-.64-2.99-1.91-3.23h8.3c1.16 0 2.22.15 3.18.44.96.3 1.76.69 2.38 1.17.63.49 1.14 1.05 1.54 1.69.41.64.67 1.31.79 2 .13.69.13 1.4 0 2.11-.12.71-.36 1.38-.72 2-.36.62-.85 1.19-1.46 1.69-.62.5-1.33.89-2.12 1.16zm-3.59-.12c.66 0 1.25-.17 1.8-.49a4 4 0 0 0 1.32-1.3c.33-.54.6-1.15.79-1.84.19-.69.28-1.39.29-2.11.01-.72-.08-1.42-.26-2.11s-.43-1.3-.77-1.84c-.33-.54-.77-.98-1.32-1.31-.54-.33-1.16-.5-1.85-.5h-2.72v11.49h2.72z" style="fill:url(#id5);fill-rule:nonzero"/>
+                                    <path d="M75.05 34.61c1.61 0 3.06.31 4.36.94 1.3.62 2.35 1.44 3.15 2.45.8 1.01 1.41 2.17 1.85 3.46.43 1.3.65 2.61.65 3.97 0 1.36-.22 2.68-.65 3.97-.44 1.3-1.05 2.45-1.85 3.46-.8 1.01-1.85 1.83-3.15 2.46-1.3.62-2.75.93-4.36.93h-7.78c.74-.14 1.24-.45 1.51-.94.27-.48.41-1.13.41-1.94V37.49c0-.81-.13-1.45-.41-1.94-.27-.48-.77-.8-1.51-.94h7.78zm0 21c1.13.01 2.14-.35 3.02-1.09.89-.74 1.56-1.7 2.02-2.89.46-1.2.8-2.52 1.02-3.96.22-1.44.22-2.89 0-4.35-.22-1.45-.56-2.78-1.01-3.97-.45-1.2-1.13-2.18-2.02-2.93-.89-.76-1.9-1.15-3.03-1.15h-2.21v20.34h2.21zm34.38-5.11c-.13.39-.22.73-.27 1.01-.06.29-.06.56-.03.83.03.28.15.5.34.67.2.17.48.3.85.36h-4.58c1.37-.26 2.36-1.22 2.95-2.87l5.88-16.22c.76 2.08 1.74 4.78 2.95 8.11 1.2 3.33 2.19 6.03 2.95 8.11.29.79.67 1.43 1.13 1.93.46.49 1.07.81 1.82.95h-7.79c.31-.06.56-.15.75-.27.19-.12.32-.26.41-.42.07-.16.11-.36.1-.6-.01-.24-.05-.48-.1-.71-.06-.23-.16-.52-.28-.86-.08-.24-.2-.57-.35-.96-.15-.4-.24-.63-.26-.71h-5.88c-.07.21-.27.77-.59 1.66zm3.56-9.91c-.7 1.92-1.6 4.45-2.72 7.59h5.41c-.98-2.8-1.87-5.33-2.69-7.59zm.73 13.21c.11.85.4 1.61.88 2.28.74.31 1.7.54 2.85.7-1.09.13-2.04.36-2.85.69a4.9 4.9 0 0 0-.88 2.26c-.11-.84-.41-1.59-.88-2.26-.81-.33-1.76-.56-2.85-.69 1.15-.16 2.1-.39 2.85-.7.48-.67.77-1.43.88-2.28zm-15.66-6.71c.68.33 1.37.82 2.06 1.47.7.65 1.27 1.26 1.71 1.82.44.56 1.03 1.33 1.76 2.31.57.78 1.01 1.37 1.32 1.77.3.4.76.95 1.37 1.65.61.7 1.13 1.23 1.57 1.58.44.36 1.01.78 1.72 1.27.71.5 1.39.84 2.03 1.02.64.19 1.41.36 2.31.52.9.16 1.81.19 2.74.08.92-.11 1.96-.31 3.13-.62 1.16-.3 2.38-.72 3.65-1.26-7.03 3.78-12.78 4.32-17.27 1.63-1.91-1.14-3.74-2.99-5.5-5.55-.31-.45-1.09-1.67-2.33-3.65-.99-1.6-1.78-2.64-2.38-3.14-.48-.39-.94-.59-1.39-.61h-2.32V53c0 1.91.64 2.99 1.92 3.23h-7.48c1.27-.24 1.91-1.32 1.91-3.23V37.81c0-1.91-.64-2.98-1.91-3.23h8.29c1.16 0 2.22.15 3.18.45.96.3 1.76.69 2.39 1.19.64.49 1.15 1.06 1.56 1.72.4.65.66 1.33.77 2.04.11.71.1 1.42-.05 2.15-.14.72-.41 1.4-.79 2.03-.39.64-.93 1.2-1.61 1.72s-1.47.91-2.36 1.19zm-3.09-.34c.66 0 1.25-.17 1.8-.49.54-.33.98-.76 1.31-1.3.33-.54.59-1.15.78-1.84.19-.69.28-1.39.3-2.1.01-.72-.07-1.43-.25-2.11-.18-.69-.43-1.3-.77-1.84-.33-.54-.77-.98-1.32-1.3-.54-.33-1.16-.5-1.85-.5h-2.73v11.49h2.73zm36.9-12.14c1.31 0 2.49.19 3.54.56 1.06.37 1.9.85 2.54 1.45a6.09 6.09 0 0 1 1.45 2.05c.33.76.49 1.55.48 2.35-.02.8-.2 1.57-.56 2.35-.36.77-.86 1.45-1.5 2.04-.64.6-1.48 1.08-2.51 1.45-1.03.37-2.18.56-3.44.56h-2.73v5.62c0 1.91.64 2.99 1.91 3.23h-7.48c1.27-.24 1.91-1.32 1.91-3.23V37.85c0-1.91-.64-2.98-1.91-3.23h8.3zm0 12.14c.69 0 1.3-.17 1.85-.49.55-.33 1-.76 1.33-1.3.33-.54.59-1.15.77-1.84.19-.69.27-1.39.27-2.1 0-.72-.1-1.43-.29-2.11-.19-.69-.45-1.3-.79-1.84s-.78-.98-1.33-1.3c-.54-.33-1.15-.5-1.81-.5h-2.73v11.49h2.73zm9.18 9.5c1.27-.24 1.91-1.32 1.91-3.23V37.83c0-1.91-.64-2.98-1.91-3.23h14.75l.71 2.72v2.73c-.15-1.44-.7-2.61-1.64-3.48-.94-.87-2.11-1.31-3.5-1.31h-4.76v9.84H149c.67 0 1.23-.05 1.67-.14.44-.09.85-.26 1.22-.5s.67-.59.89-1.04c.22-.46.37-1.04.46-1.73v7.47c-.17-1.35-.59-2.25-1.24-2.71-.65-.46-1.66-.69-3-.69h-2.39v9.83h4.76c1.39 0 2.55-.44 3.5-1.32.94-.88 1.49-2.04 1.65-3.49v2.73l-.71 2.72h-14.75zm29.7-4.15c0-.58-.14-1.14-.4-1.67s-.61-.99-1.06-1.41c-.44-.42-.96-.82-1.54-1.21-.58-.39-1.19-.76-1.84-1.13-.64-.36-1.28-.73-1.93-1.11-.64-.37-1.25-.78-1.83-1.21-.58-.44-1.1-.89-1.55-1.37-.45-.47-.81-1.02-1.07-1.64-.27-.63-.41-1.29-.41-2-.01-.97.31-1.85.98-2.65.67-.8 1.51-1.41 2.54-1.82 1.02-.42 2.09-.62 3.19-.62 2.64 0 4.77.43 6.4 1.29v4.49c-.39-1.46-1.22-2.69-2.46-3.66-1.25-.98-2.56-1.46-3.94-1.46-1.02 0-1.84.27-2.46.81-.62.54-.93 1.38-.93 2.52 0 .57.22 1.12.65 1.65.43.54.99 1.03 1.68 1.48.69.45 1.46.91 2.29 1.38.83.47 1.67.97 2.5 1.52.83.54 1.59 1.11 2.29 1.7.69.6 1.25 1.3 1.68 2.11.43.81.65 1.68.65 2.6 0 .8-.17 1.54-.51 2.23-.34.7-.84 1.31-1.5 1.87-.66.55-1.52.98-2.6 1.3-1.07.32-2.3.48-3.68.48-2.68-.08-4.93-.76-6.76-2.03l.08-5.17c.33 1.61 1.24 3.04 2.74 4.27 1.33 1.09 2.75 1.76 4.26 2.02 1.56.25 2.76-.04 3.57-.87.63-.64.95-1.54.96-2.72z" style="fill:url(#id3);fill-rule:nonzero"/>
+                                    <path d="M126.85 64.73c.32-.06.48-.33.48-.81v-3.84c0-.48-.16-.75-.48-.81h1.89c-.32.06-.48.33-.48.81v3.84c0 .48.16.75.48.81h-1.89zm5.11 0c.19-.04.31-.11.38-.24.07-.12.1-.28.1-.49v-4.01c0-.2-.04-.37-.1-.49-.07-.12-.2-.2-.38-.24h1.32l2.92 4.8v-4.07c0-.2-.03-.37-.1-.49s-.19-.2-.38-.24h1.13c-.19.04-.31.12-.38.24s-.1.28-.1.49v4.74h-.84l-2.92-4.79c-.01.39-.02.82-.02 1.28 0 .46 0 .97.01 1.52 0 .56.01.98.01 1.26 0 .2.03.37.1.49.06.13.19.2.38.24h-1.13zm11.11-1.05c0-.15-.04-.29-.1-.42-.06-.13-.15-.25-.27-.35a2.5 2.5 0 0 0-.39-.3c-.15-.1-.3-.19-.46-.29-.16-.09-.32-.19-.48-.28-.17-.09-.32-.2-.46-.31-.15-.11-.28-.22-.39-.34-.11-.12-.2-.26-.27-.41-.07-.16-.1-.33-.11-.5 0-.24.08-.47.25-.67.17-.2.38-.36.64-.46.26-.11.53-.16.81-.16.67 0 1.2.11 1.61.33v1.13c-.1-.37-.31-.68-.62-.92-.31-.25-.65-.37-.99-.37-.26 0-.46.07-.62.2-.16.14-.24.35-.24.64 0 .14.06.28.17.42.11.13.25.26.42.37.18.11.37.23.58.35.21.12.42.24.63.38.21.14.4.28.57.43.18.15.32.33.43.53.11.2.17.43.17.66 0 .2-.04.39-.13.56-.09.18-.21.33-.38.47-.17.14-.38.25-.65.33-.27.08-.58.12-.93.12-.68-.02-1.25-.19-1.71-.51l.02-1.31c.08.41.31.77.69 1.08.33.28.69.45 1.07.51.4.06.7-.01.91-.22.16-.16.24-.39.24-.69zm5.23-4.25c-.35 0-.64.11-.88.33-.24.22-.37.52-.41.88v-.69l.18-.69h4.73l.18.69v.69c-.04-.36-.18-.66-.41-.88-.24-.22-.53-.33-.88-.33h-.79v4.49c0 .48.16.75.48.81h-1.89c.32-.06.48-.33.48-.81v-4.49h-.78zm7.59.56c-.26-.41-.57-.66-.93-.73h2.05l-.11.03c-.03.01-.05.02-.07.04-.02.02-.03.03-.04.05-.02.02-.02.04-.02.06v.07c0 .02.01.05.02.08.02.04.03.07.04.09.01.02.02.06.05.1.02.04.04.07.05.1.02.03.04.06.06.11l1.07 1.72 1.07-1.72c.03-.04.05-.08.06-.11.01-.03.03-.06.05-.1.02-.04.04-.07.05-.1.01-.02.02-.05.04-.09.02-.04.02-.06.02-.08v-.07c0-.02-.01-.05-.02-.06-.01-.02-.03-.03-.04-.05a.161.161 0 0 0-.07-.04c-.03-.01-.07-.02-.11-.03h1.15c-.36.07-.67.31-.93.73l-1.17 1.88v2.05c0 .48.16.75.48.81h-1.89c.32-.06.48-.33.48-.81v-1.78c-.3-.48-.75-1.2-1.34-2.15zm7.32 4.74c.32-.06.48-.33.48-.81v-3.84c0-.48-.16-.75-.48-.81h1.89c-.32.06-.48.33-.48.81v4.49h1.2c.35 0 .65-.11.89-.33.24-.22.37-.51.41-.88v.69l-.18.69h-3.72zm7.04 0c.32-.06.48-.33.48-.81v-3.84c0-.48-.16-.75-.48-.81h3.72l.18.69v.69c-.04-.36-.17-.66-.41-.88-.24-.22-.53-.33-.89-.33h-1.2v2.48h.61c.17 0 .31-.01.42-.04a.71.71 0 0 0 .31-.13c.09-.06.17-.15.22-.26.06-.11.09-.26.12-.43v1.89c-.04-.34-.15-.57-.31-.69-.16-.11-.42-.17-.76-.17h-.61v2.48h1.2c.35 0 .65-.11.89-.33.24-.22.37-.51.41-.88v.69l-.18.69h-3.72z" style="fill:url(#id4);fill-rule:nonzero"/>
+                                    <path d="M5.17 32.05c-.02-6.68 1.03-12.88 3.52-18.04 2-4.16 3.56-6.36 6.54-9.52 1.07-1.13 1.91-1.64 2.57-2.75C12.79 3.31 7 9.72 4.59 13.76.88 19.98.05 25.5.03 34.3L0 64.79h16.14l-.01-23.75c-.01-7.87-1-17.25 2.41-23.91 2.26-4.41 5.11-7.2 9.56-9.42 10.96-5.47 22.13.07 26.83 6.74 6.7 9.51 4.76 20.59-2.22 27.52-9.76 9.69-19.59 5.2-30.7 6.69-.28.41-.15.07-.32.77-.16.66-.02-.1-.09.59l.11 4.09c14.68-.23 24.87 1.38 34.49-7.69 4.42-4.17 8.11-10.59 8.12-19.5.04-24.64-30.84-36.47-47.15-17.61-4.65 5.37-6.46 11.7-6.45 21.15l.06 28.98H5.24l-.05-27.37z" style="fill:url(#id2)"/>
+                                    <path d="M21.94 19.8c14.16-8.97 25.92.94 26.16 12.24.11 5.02-2.13 7.81-4.01 10.83 4.29-2.42 8.26-5.14 9.26-11.18 1.05-6.31-2.54-11.8-5.37-14.79-7.68-8.16-21.56-7.87-26.04 2.89z" style="fill:url(#id1)"/>
+                                    <path d="M21.6 64.8c9.92-.06 18.15.58 26.03-3.2 5.59-2.69 12.67-9.28 14.39-14.69-3.18 3.29-2.61 3.23-6.9 6.45-9.3 6.98-21.66 6.23-33.51 5.98v5.46z" style="fill:url(#id0)"/>
+                                    <path d="M163.87 7.65h-.67V2.94h-1.66v-.59h3.97v.59h-1.64z" class="fil6"/>
+                                    <path id="_1" d="m168.65 7.65-1.74-4.64h-.03c.01.09.02.22.03.38.01.15.01.32.02.5s.01.36.01.55v3.21h-.61v-5.3h.98l1.63 4.34h.03l1.66-4.34h.98v5.3h-.66V4.39c0-.17 0-.35.01-.52.01-.17.02-.33.02-.48.01-.15.02-.28.02-.39h-.03l-1.76 4.64h-.55z" class="fil6"/>
+                                    </g>
+                                </g>
+                            </svg>
+                        </a>
+
+                        <div class="pdf-info">
+                            <div class="pdf-category">${currentCategory.name} Price List</div>
+                            <div class="pdf-date">Last updated: ${formatFullDate(currentCategory.lastUpdated)}</div>
+                            <div class="pdf-address">
+                                Basement Floor, 76, Canera Bank, Mission Road<br>
+                                Bangalore, Karnataka - 560027<br>
+                                +91 9738101408 • contact@decordrapesinstyle.com
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pdf-table-container">
+                        <table class="pdf-table">
+                            <thead>
+                                <tr>
+                                    <th>Serial</th>
+                `;
+
+                columnNames.forEach(column => {
+                    tableHTML += `<th>${formatFieldName(column)}</th>`;
+                });
+
+                tableHTML += `
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                chunk.forEach(product => {
+                    tableHTML += `
+                        <tr>
+                            <td>${product.serial}</td>
+                    `;
+
+                    columnNames.forEach(column => {
+                        tableHTML += `<td>${formatFieldValue(column, product[column])}</td>`;
+                    });
+
+                    tableHTML += `</tr>`;
+                });
+
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                if (pageIndex === productChunks.length - 1 && termsAndConditions.length > 0) {
+                    tableHTML += `
+                        <div class="pdf-terms">
+                            <div class="pdf-terms-title">Terms & Conditions</div>
+                            <ul class="pdf-terms-list">
+                    `;
+
+                    termsAndConditions.forEach(term => {
+                        tableHTML += `<li>${term}</li>`;
+                    });
+
+                    tableHTML += `
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                page.innerHTML = tableHTML;
+                pdfContent.appendChild(page);
+            });
+
+            window.print();
+        }
+
+        backButton.addEventListener('click', () => {
+            categoriesView.style.display = 'block';
+            categoryDetailsView.style.display = 'none';
+            mainTitle.style.display = 'block';
+            mainHeader.style.display = 'block';
+            currentCategory = null;
+
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('category');
+            newUrl.searchParams.delete('product');
+            window.history.pushState({}, '', newUrl);
+        });
+
+        exportPdfBtn.addEventListener('click', generatePDF);
+
+        window.addEventListener('popstate', () => {
+            handleUrlParams();
+        });
+
+        fetchCategories();
+        fetchTermsAndConditions();
+    </script>
+</body>
+
+</html>
